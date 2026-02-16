@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  update-kustomize:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ArgoCD Repo
