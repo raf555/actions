@@ -35,5 +35,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
-          git commit -m "deploy: update ${{ inputs.image_name }} to ${{ inputs.tag }} in ${{ inputs.path }}"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "deploy: update ${{ inputs.image_name }} to ${{ inputs.tag }} in ${{ inputs.path }}"
+            git push
+          fi
