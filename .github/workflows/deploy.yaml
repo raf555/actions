@@ -18,7 +18,7 @@ jobs:
       - name: Checkout ArgoCD Repo
         uses: actions/checkout@v4
         with:
-          repository: user/argocd
+          repository: raf555/argocd
           token: ${{ secrets.DEPLOYMENT_TOKEN }}
 
       - name: Set up Kustomize
