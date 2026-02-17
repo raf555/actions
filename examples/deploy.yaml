@@ -1,0 +1,13 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-deploy:
+    uses: raf555/actions/.github/workflows/deploy.yaml@init
+    with:
+      image_name: k8s-app
+      tag: ${{ github.ref_name }}
+      path: 'apps/k8s-app'
+    secrets: inherit

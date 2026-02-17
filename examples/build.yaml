@@ -1,0 +1,17 @@
+name: Build Image
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    uses: raf555/actions/.github/workflows/build-ghcr.yaml@init
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image_name: "k8s-app"
+      tag: ${{ github.ref_name }}
+    secrets: inherit
