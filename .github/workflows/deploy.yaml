@@ -36,7 +36,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git add .
           if ! git diff --cached --quiet; then
-            git commit -m "deploy: update ${{ inputs.image_name }} to ${{ inputs.tag }} in ${{ inputs.path }}"
+            git commit -m "deploy(${{ inputs.path }}): update ${{ inputs.image_name }} to ${{ inputs.tag }}"
             current_branch="$(git rev-parse --abbrev-ref HEAD)"
             if ! git pull --rebase origin "$current_branch"; then
               echo "Error: Failed to pull and rebase the latest changes from origin/$current_branch. Please resolve conflicts manually."
