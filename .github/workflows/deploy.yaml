@@ -29,21 +29,23 @@ jobs:
           cd ${{ inputs.path }}
           kustomize edit set image "${{ inputs.image_name }}=*:${{ inputs.tag }}"
         # kustomize edit set image ${{ inputs.image_name }}=ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:${{ inputs.tag }}
-          
-      - name: Commit and Push
+
+      - name: Commit
+        id: commit_step
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
           if ! git diff --cached --quiet; then
             git commit -m "deploy(${{ inputs.path }}): update ${{ inputs.image_name }} to ${{ inputs.tag }}"
-            current_branch="$(git rev-parse --abbrev-ref HEAD)"
-            if ! git pull --rebase origin "$current_branch"; then
-              echo "Error: Failed to pull and rebase the latest changes from origin/$current_branch. Please resolve conflicts manually."
-              exit 1
-            fi
-            if ! git push; then
-              echo "Error: Failed to push changes to origin/$current_branch. Please check network connectivity or remote repository status."
-              exit 1
-            fi
+            echo "committed=true" >> $GITHUB_OUTPUT
+          else
+            echo "committed=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Push
+        if: steps.commit_step.outputs.committed == 'true'
+        uses: cutlerydrawer/action-git-try-push@v2
+        with:
+          branch: main
+          tries: 10
