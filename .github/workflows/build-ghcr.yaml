@@ -25,6 +25,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Compute tags
+        id: tags
+        run: |
+          TAG="${{ inputs.tag }}"
+          IMAGE="ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}"
+          TAGS="${IMAGE}:${TAG}"
+          if [[ "$TAG" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            TAGS="${TAGS}"$'\n'"${IMAGE}:latest"
+          fi
+          echo "tags<<EOF" >> $GITHUB_OUTPUT
+          echo "$TAGS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
@@ -32,6 +45,4 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ inputs.tag }}
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:${{ inputs.tag }}
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:latest
+          tags: ${{ steps.tags.outputs.tags }}
