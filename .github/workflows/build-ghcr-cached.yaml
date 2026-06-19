@@ -36,4 +36,4 @@ jobs:
           registry: ghcr.io
           image_name: ${{ inputs.image_name }}
           image_tag: ${{ steps.tags.outputs.image_tag }}
-          build_extra_args: "--build-arg VERSION=${{ inputs.tag }}"
+          build_extra_args: "--build-arg=VERSION=${{ inputs.tag }}"
